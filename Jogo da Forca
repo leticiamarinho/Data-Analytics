@@ -1,0 +1,72 @@
+import random
+
+class Forca:
+    def __init__(self, palavra):
+        """Inicializa o jogo com uma palavra secreta."""
+        self.palavra_secreta = palavra.lower()
+        self.tentativas = set()  # Letras já tentadas
+        self.vidas = 6  # Número de erros permitidos
+        self.estado_atual = ["_" for _ in self.palavra_secreta]  # Exibição da palavra
+
+    def mostrar_palavra(self):
+        """Mostra a palavra com as letras descobertas."""
+        return " ".join(self.estado_atual)
+
+    def tentar_letra(self, letra):
+        """Processa a tentativa do jogador."""
+        letra = letra.lower()
+        
+        # Verifica se a letra já foi tentada
+        if letra in self.tentativas:
+            print("Você já tentou essa letra!")
+            return
+
+        # Adiciona a letra às tentativas
+        self.tentativas.add(letra)
+
+        # Verifica se a letra está na palavra
+        if letra in self.palavra_secreta:
+            for i, char in enumerate(self.palavra_secreta):
+                if char == letra:
+                    self.estado_atual[i] = letra
+            print(f"Boa! A letra '{letra}' está na palavra!")
+        else:
+            self.vidas -= 1
+            print(f"Ops! A letra '{letra}' não está na palavra. Vidas restantes: {self.vidas}")
+
+    def verificar_vitoria(self):
+        """Verifica se o jogador ganhou."""
+        return "_" not in self.estado_atual
+
+    def verificar_derrota(self):
+        """Verifica se o jogador perdeu."""
+        return self.vidas <= 0
+
+    def jogar(self):
+        """Loop principal do jogo."""
+        print("🎮 Bem-vindo ao Jogo da Forca!")
+        print("Adivinhe a palavra secreta.")
+        print(self.mostrar_palavra())
+
+        while not self.verificar_vitoria() and not self.verificar_derrota():
+            letra = input("\nDigite uma letra: ").strip()
+
+            if len(letra) != 1 or not letra.isalpha():
+                print("Digite apenas uma letra válida.")
+                continue
+
+            self.tentar_letra(letra)
+            print(self.mostrar_palavra())
+
+        if self.verificar_vitoria():
+            print("\n🎉 Parabéns! Você acertou a palavra:", self.palavra_secreta)
+        else:
+            print("\n💀 Você perdeu! A palavra era:", self.palavra_secreta)
+
+# Lista de palavras para o jogo
+palavras = ["python", "energia", "eletricidade", "engenharia", "sustentabilidade"]
+
+# Inicia o jogo com uma palavra aleatória
+jogo = Forca(random.choice(palavras))
+jogo.jogar()
+        
